@@ -1,36 +1,27 @@
-mod entity
+use crate::domain::entity;
+use crate::node::EntityQuery;
 
-struct EntityQueryImpl {
-    zones: Vec<i32>,
-    realms: Vec<i32>,
-    bound: ZoneBound,
+pub struct EntityQueryImpl {
     limit: i32,
     offset: i32
 }
 
-impl EntityQueryImpl for EntityQuery {
-    fn filterByZone(zones: Vec<i32>) -> EntityQueryImpl {
+impl EntityQuery for EntityQueryImpl {
 
+    fn new() -> EntityQueryImpl {
+        return EntityQueryImpl{ limit: 0, offset: 0 };
+    }
+
+    fn limit(&self, limit: i32) -> &EntityQueryImpl {
+        return self;
     }
     
-    fn filterByRealm(realms: Vec<i32>) -> EntityQueryImpl {
-
+    fn offset(&self, offset: i32) -> &EntityQueryImpl {
+        return self;
     }
 
-    fn filterByBound(bound: ZoneBound) -> EntityQueryImpl {
-
-    }
-
-    fn limit(limit: i32) -> EntityQueryImpl {
-
-    }
-    
-    fn offset(offset: i32) -> EntityQueryImpl {
-
-    }
-
-    fn getEntities() -> Vec<entity::Entity> {
-
+    fn getEntities(&self) -> Vec<entity::Entity> {
+        return vec![];
     }
 }
 
