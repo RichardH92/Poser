@@ -2,6 +2,7 @@ use rstar::RTree;
 use rstar::RTreeObject;
 use rstar::AABB;
 use crate::node::Node;
+use crate::node::AddEntitiesValidationErrors;
 use crate::domain::entity;
 use crate::node::entity_query::EntityQuery;
 use std::collections::HashMap;
@@ -48,10 +49,30 @@ impl Node<EntityQueryImpl> for NodeImpl {
         }
     }
 
-    fn add_entities(&mut self, entities: Vec<entity::Entity>) {
+    fn add_entities(&mut self, entities: Vec<entity::Entity>) -> Result<(), Vec<AddEntitiesValidationErrors>> {
+        let mut errs : Vec<AddEntitiesValidationErrors> = Vec::new();
+        let mut seen_ids : Vec<i32> = Vec::new();
+
         for entity in entities.iter() {
+            match self.map.get(&entity.id) {
+                Some(_e) => errs.push(AddEntitiesValidationErrors::EntityAlreadyExists),
+                _ => (),
+            }
+
+            if seen_ids.contains(&entity.id) {
+               errs.push(AddEntitiesValidationErrors::EntityAddedTwice); 
+            } else {
+                seen_ids.push(entity.id);
+            }
+
             self.map.insert(entity.id, entity.clone());
         }
+
+        if errs.is_empty() {
+            return Ok(());
+        }
+
+        Err(errs) 
     }
 
     fn remove_entities(&mut self, entity_ids: Vec<i32>) {
