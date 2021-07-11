@@ -66,7 +66,10 @@ impl Node<EntityQueryImpl> for NodeImpl {
                seen_ids.push(entity.id);
                match self.map.get(&entity.id) {
                    Some(_e) => errs.push(AddEntitiesValidationErrors::EntityAlreadyExists),
-                   _ => { self.map.insert(entity.id, entity.clone()); },
+                   _ => { 
+                       self.map.insert(entity.id, entity.clone());
+                       self.tree.insert(entity.clone());
+                   },
                }
             }
         }
@@ -80,7 +83,10 @@ impl Node<EntityQueryImpl> for NodeImpl {
 
     fn remove_entities(&mut self, entity_ids: Vec<i32>) {
         for id in entity_ids.iter() {
-            self.map.remove(id);
+            match self.map.remove(id) {
+                Some(entity) => { self.tree.remove(&entity); },
+                _ => ()
+            }
         }
     }
 
@@ -98,10 +104,18 @@ impl Node<EntityQueryImpl> for NodeImpl {
 
     fn execute_query(&self, query: &EntityQueryImpl) -> Vec<&entity::Entity> {
         let mut ret : Vec<&entity::Entity> = Vec::new();
-
-        for entry in self.map.iter() {
-            ret.push(entry.1);
-        } 
+        
+        match query.bound {
+            Some(bound) => { 
+                let b = AABB::from_corners([bound.x0, bound.x1], [bound.y0, bound.y1], [bound.z0, bound.z1]);
+                return self.tree.locate_in_envelope(&b);
+            },
+            _ => {
+                for entry in self.map.iter() {
+                    ret.push(entry.1);
+                }           
+            } 
+        }
     
         ret
     }
