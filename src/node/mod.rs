@@ -6,9 +6,9 @@ pub mod node_impl;
 
 pub trait Node/*<T: EntityQuery>*/ {
     fn new() -> Self;
-    fn addEntities(&self, zone: i32, realm: i32, entities: Vec<entity::Entity>);
-    fn removeEntities(&self, entityIds: Vec<i32>);
-    fn getEntity(&self, id: i32);
+    fn addEntities(&mut self, zone: i32, realm: i32, entities: Vec<entity::Entity>);
+    fn removeEntities(&mut self, entityIds: Vec<i32>);
+    fn getEntity(&self, id: i32) -> entity::Entity;
     //fn newQuery(&self) -> T;
 }
 
@@ -26,6 +26,14 @@ mod tests {
     #[test]
     fn test_add_entities_happy_path() {
         let mut node : node_impl::NodeImpl = Node::new();
-        assert_eq!(4, 4);
+       
+        let entity = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+
+        node.addEntities(0, 0, vec![entity]);
+
+        let actual : entity::Entity = node.getEntity(1);
+        let expected = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        
+        assert_eq!(expected, actual);
     }
 }

@@ -6,9 +6,11 @@ use crate::node::Node;
 use crate::domain::entity;
 // use crate::node::EntityQuery;
 // use crate::node::entity_query::EntityQueryImpl;
+use std::collections::HashMap;
 
 pub struct NodeImpl {
-    tree: RTree<entity::Entity>
+    tree: RTree<entity::Entity>,
+    map: HashMap<i32, entity::Entity>
 }
 
 impl RTreeObject for entity::Entity {
@@ -24,19 +26,26 @@ impl RTreeObject for entity::Entity {
 impl Node/*<EntityQueryImpl>*/ for NodeImpl {
 
     fn new() -> NodeImpl {
-        NodeImpl { tree: RTree::new() }
+        NodeImpl { 
+            tree: RTree::new(),
+            map: HashMap::new()
+        }
     }
 
-    fn addEntities(&self, zone: i32, realm: i32, entities: Vec<entity::Entity>) {
+    fn addEntities(&mut self, zone: i32, realm: i32, entities: Vec<entity::Entity>) {
+        
+        for entity in entities.iter() {
+            self.map.insert(entity.id, entity.clone());
+        }
 
     }
 
-    fn removeEntities(&self, entityIds: Vec<i32>) {
+    fn removeEntities(&mut self, entityIds: Vec<i32>) {
     
     }
 
-    fn getEntity(&self, id: i32) {
-
+    fn getEntity(&self, id: i32) -> entity::Entity {
+        entity::Entity { id: 3, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 } 
     }
     
     /*fn newQuery(&self) -> EntityQueryImpl {

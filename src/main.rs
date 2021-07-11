@@ -3,7 +3,7 @@ mod node;
 mod domain;
 
 fn main() {
-    let mut e = domain::entity::Entity { position: vec![0.0, 1.0, 2.0, 3.0], x_coordinate: 0.0, y_coordinate: 1.0 };
+    let mut e = domain::entity::Entity { id: 1, x_coordinate: 0.0, y_coordinate: 1.0, z_coordinate: 3.0 };
     
     //let mut node = node::Node::new();
 
