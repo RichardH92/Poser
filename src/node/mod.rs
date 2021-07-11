@@ -15,7 +15,7 @@ pub trait Node<Q: entity_query::EntityQuery>{
     fn remove_entities(&mut self, entity_ids: Vec<i32>);
     fn get_entity(&self, id: i32) -> Option<&entity::Entity>;
     fn new_query(&self) -> Q; 
-    fn execute_query(&self, query: Q) -> Vec<&entity::Entity>;
+    fn execute_query(&self, query: &Q) -> Vec<&entity::Entity>;
 }
 
 #[cfg(test)]

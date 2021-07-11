@@ -96,7 +96,7 @@ impl Node<EntityQueryImpl> for NodeImpl {
         }
     }
 
-    fn execute_query(&self, query: EntityQueryImpl) -> Vec<&entity::Entity> {
+    fn execute_query(&self, query: &EntityQueryImpl) -> Vec<&entity::Entity> {
         let mut ret : Vec<&entity::Entity> = Vec::new();
 
         for entry in self.map.iter() {
