@@ -4,6 +4,7 @@ use rstar::AABB;
 use crate::node::Node;
 use crate::node::AddEntitiesValidationErrors;
 use crate::domain::entity;
+use crate::domain::bound;
 use crate::node::entity_query::EntityQuery;
 use std::collections::HashMap;
 
@@ -14,15 +15,15 @@ pub struct NodeImpl {
 
 pub struct EntityQueryImpl {
     limit: u32,
-    offset: u32
+    offset: u32,
+    bound: Option<bound::Bound>
 }
 
 impl RTreeObject for entity::Entity {
     
     type Envelope = AABB<[f32; 3]>;
 
-    fn envelope(&self) -> Self::Envelope
-    {
+    fn envelope(&self) -> Self::Envelope {
         AABB::from_point([self.x_coordinate, self.y_coordinate, self.z_coordinate])
     }
 }
@@ -36,6 +37,11 @@ impl EntityQuery for EntityQueryImpl {
     
     fn offset(&mut self, offset: u32) -> &mut Self {
         self.offset = offset;
+        self
+    }
+
+    fn bound(&mut self, bound: bound::Bound) -> &mut Self {
+        self.bound = Some(bound);
         self
     }
 }
@@ -86,6 +92,7 @@ impl Node<EntityQueryImpl> for NodeImpl {
         EntityQueryImpl {
             limit: 100,
             offset: 0,
+            bound: None
         }
     }
 

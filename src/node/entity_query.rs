@@ -1,10 +1,12 @@
 use crate::domain::entity;
 use crate::node::Node;
+use crate::domain::bound;
 use crate::node::node_impl::NodeImpl;
 
 pub trait EntityQuery {
     fn limit(&mut self, limit: u32) -> &mut Self;
     fn offset(&mut self, offset: u32) -> &mut Self;
+    fn bound(&mut self, bound: bound::Bound) -> &mut Self;
 }
 
 #[cfg(test)]
