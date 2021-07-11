@@ -1,28 +1,9 @@
-// use crate::domain::entity;
-// use crate::node::EntityQuery;
+use crate::domain::entity;
 
-/*pub struct EntityQueryImpl {
-    limit: i32,
-    offset: i32
+pub trait EntityQuery : Sized {
+    fn limit(&mut self, limit: u32) -> &mut Self;
+    fn offset(&mut self, offset: u32) -> &mut Self;
+    fn get_entities(&self) -> Vec<entity::Entity>;
 }
 
-impl EntityQuery for EntityQueryImpl {
 
-    fn new() -> EntityQueryImpl {
-        EntityQueryImpl{ limit: 0, offset: 0 }
-    }
-
-    fn limit(&mut self, limit: i32) -> &mut EntityQueryImpl {
-        self
-    }
-    
-    fn offset(&mut self, offset: i32) -> &mut EntityQueryImpl {
-        self
-    }
-
-    fn getEntities(&self) -> Vec<entity::Entity> {
-        vec![]
-    }
-}
-
-*/

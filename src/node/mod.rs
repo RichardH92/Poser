@@ -4,20 +4,13 @@ use crate::domain::entity;
 pub mod entity_query;
 pub mod node_impl;
 
-pub trait Node/*<T: EntityQuery>*/ {
+pub trait Node<Q: entity_query::EntityQuery> {
     fn new() -> Self;
     fn add_entities(&mut self, entities: Vec<entity::Entity>);
     fn remove_entities(&mut self, entity_ids: Vec<i32>);
     fn get_entity(&self, id: i32) -> Option<&entity::Entity>;
-    //fn newQuery(&self) -> T;
+    fn new_query(&self) -> Q; 
 }
-
-/*pub trait EntityQuery {
-    fn new() -> Self
-    fn limit(&mut self, limit: i32) -> &mut Self;
-    fn offset(&mut self, offset: i32) -> &mut Self;
-    fn getEntities(&self) -> Vec<entity::Entity>;
-}*/
 
 #[cfg(test)]
 mod tests {
