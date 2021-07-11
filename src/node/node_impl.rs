@@ -32,7 +32,7 @@ impl Node/*<EntityQueryImpl>*/ for NodeImpl {
         }
     }
 
-    fn addEntities(&mut self, zone: i32, realm: i32, entities: Vec<entity::Entity>) {
+    fn addEntities(&mut self, entities: Vec<entity::Entity>) {
         
         for entity in entities.iter() {
             self.map.insert(entity.id, entity.clone());
@@ -44,8 +44,8 @@ impl Node/*<EntityQueryImpl>*/ for NodeImpl {
     
     }
 
-    fn getEntity(&self, id: i32) -> entity::Entity {
-        entity::Entity { id: 3, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 } 
+    fn getEntity(&self, id: i32) -> Option<&entity::Entity> {
+        self.map.get(&id) 
     }
     
     /*fn newQuery(&self) -> EntityQueryImpl {
