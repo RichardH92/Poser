@@ -32,7 +32,7 @@ impl Node/*<EntityQueryImpl>*/ for NodeImpl {
         }
     }
 
-    fn addEntities(&mut self, entities: Vec<entity::Entity>) {
+    fn add_entities(&mut self, entities: Vec<entity::Entity>) {
         
         for entity in entities.iter() {
             self.map.insert(entity.id, entity.clone());
@@ -40,11 +40,14 @@ impl Node/*<EntityQueryImpl>*/ for NodeImpl {
 
     }
 
-    fn removeEntities(&mut self, entityIds: Vec<i32>) {
-    
+    fn remove_entities(&mut self, entity_ids: Vec<i32>) {
+        
+        for id in entity_ids.iter() {
+            self.map.remove(id);
+        }
     }
 
-    fn getEntity(&self, id: i32) -> Option<&entity::Entity> {
+    fn get_entity(&self, id: i32) -> Option<&entity::Entity> {
         self.map.get(&id) 
     }
     
