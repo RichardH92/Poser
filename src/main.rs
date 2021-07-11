@@ -1,9 +1,8 @@
-
 mod node;
 mod domain;
 
 fn main() {
-    let mut e = domain::entity::Entity { id: 1, x_coordinate: 0.0, y_coordinate: 1.0, z_coordinate: 3.0 };
+    let _e = domain::entity::Entity { id: 1, x_coordinate: 0.0, y_coordinate: 1.0, z_coordinate: 3.0 };
     
     //let mut node = node::Node::new();
 

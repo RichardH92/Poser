@@ -1,4 +1,3 @@
-
 use rstar::RTree;
 use rstar::RTreeObject;
 use rstar::AABB;
@@ -14,7 +13,7 @@ pub struct NodeImpl {
 
 pub struct EntityQueryImpl {
     limit: u32,
-    offset: u32,
+    offset: u32
 }
 
 impl RTreeObject for entity::Entity {
@@ -28,6 +27,7 @@ impl RTreeObject for entity::Entity {
 }
 
 impl EntityQuery for EntityQueryImpl {
+
     fn limit(&mut self, limit: u32) -> &mut Self {
         self.limit = limit;
         self
@@ -36,10 +36,6 @@ impl EntityQuery for EntityQueryImpl {
     fn offset(&mut self, offset: u32) -> &mut Self {
         self.offset = offset;
         self
-    }
-    
-    fn get_entities(&self) -> Vec<entity::Entity> {
-        vec![]
     }
 }
 
@@ -71,8 +67,18 @@ impl Node<EntityQueryImpl> for NodeImpl {
     fn new_query(&self) -> EntityQueryImpl {
         EntityQueryImpl {
             limit: 100,
-            offset: 0
+            offset: 0,
         }
+    }
+
+    fn execute_query(&self, query: EntityQueryImpl) -> Vec<&entity::Entity> {
+        let mut ret : Vec<&entity::Entity> = Vec::new();
+
+        for entry in self.map.iter() {
+            ret.push(entry.1);
+        } 
+    
+        ret
     }
 }
 

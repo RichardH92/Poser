@@ -1,15 +1,15 @@
-
 use crate::domain::entity;
 
 pub mod entity_query;
 pub mod node_impl;
 
-pub trait Node<Q: entity_query::EntityQuery> {
+pub trait Node<Q: entity_query::EntityQuery>{
     fn new() -> Self;
     fn add_entities(&mut self, entities: Vec<entity::Entity>);
     fn remove_entities(&mut self, entity_ids: Vec<i32>);
     fn get_entity(&self, id: i32) -> Option<&entity::Entity>;
     fn new_query(&self) -> Q; 
+    fn execute_query(&self, query: Q) -> Vec<&entity::Entity>;
 }
 
 #[cfg(test)]
