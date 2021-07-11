@@ -54,18 +54,15 @@ impl Node<EntityQueryImpl> for NodeImpl {
         let mut seen_ids : Vec<i32> = Vec::new();
 
         for entity in entities.iter() {
-            match self.map.get(&entity.id) {
-                Some(_e) => errs.push(AddEntitiesValidationErrors::EntityAlreadyExists),
-                _ => (),
-            }
-
             if seen_ids.contains(&entity.id) {
                errs.push(AddEntitiesValidationErrors::EntityAddedTwice); 
             } else {
-                seen_ids.push(entity.id);
+               seen_ids.push(entity.id);
+               match self.map.get(&entity.id) {
+                   Some(_e) => errs.push(AddEntitiesValidationErrors::EntityAlreadyExists),
+                   _ => { self.map.insert(entity.id, entity.clone()); },
+               }
             }
-
-            self.map.insert(entity.id, entity.clone());
         }
 
         if errs.is_empty() {
