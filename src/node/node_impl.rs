@@ -6,6 +6,7 @@ use crate::node::AddEntitiesValidationErrors;
 use crate::domain::entity;
 use crate::domain::bound;
 use crate::node::entity_query::EntityQuery;
+use crate::node::entity_iterator::EntityIterator;
 use std::collections::HashMap;
 
 pub struct NodeImpl {
@@ -19,6 +20,21 @@ pub struct EntityQueryImpl {
     bound: Option<bound::Bound>
 }
 
+pub struct EntityIteratorImpl<'service, 'iterator : 'service> {
+    map_iter: &'iterator mut std::collections::hash_map::Iter<'service, i32, entity::Entity> 
+}
+
+impl<'service, 'iterator : 'service> Iterator for EntityIteratorImpl<'service, 'iterator> {
+    type Item = &'service entity::Entity;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.map_iter.next() {
+            Some(item) => Some(item.1),
+            None => None
+        }
+    }
+}
+
 impl RTreeObject for entity::Entity {
     
     type Envelope = AABB<[f32; 3]>;
@@ -27,6 +43,7 @@ impl RTreeObject for entity::Entity {
         AABB::from_point([self.x_coordinate, self.y_coordinate, self.z_coordinate])
     }
 }
+
 
 impl EntityQuery for EntityQueryImpl {
 
@@ -46,7 +63,7 @@ impl EntityQuery for EntityQueryImpl {
     }
 }
 
-impl Node<EntityQueryImpl> for NodeImpl {
+impl<'a> Node<'a, EntityQueryImpl, EntityIteratorImpl<'a, '_>> for NodeImpl {
 
     fn new() -> NodeImpl {
         NodeImpl { 
@@ -102,22 +119,25 @@ impl Node<EntityQueryImpl> for NodeImpl {
         }
     }
 
-    fn execute_query(&self, query: &EntityQueryImpl) -> Vec<&entity::Entity> {
-        let mut ret : Vec<&entity::Entity> = Vec::new();
-        
-        match query.bound {
+    fn execute_query<'b : 'a>(&self, query: &EntityQueryImpl) -> EntityIteratorImpl<'a, 'b> {
+       
+        EntityIteratorImpl {
+            map_iter: &mut self.map.iter(),
+        }
+
+        /*match query.bound {
             Some(bound) => { 
-                let b = AABB::from_corners([bound.x0, bound.x1], [bound.y0, bound.y1], [bound.z0, bound.z1]);
-                return self.tree.locate_in_envelope(&b);
+                let b = AABB::from_corners([bound.x0, bound.y0, bound.z0], [bound.x1, bound.y1, bound.z1]);
+                return Box::new(self.tree.locate_in_envelope(&b));
             },
             _ => {
-                for entry in self.map.iter() {
-                    ret.push(entry.1);
-                }           
-            } 
-        }
-    
-        ret
+                let mut iter = self.map.iter();
+                let mut iter2 = iter.map(|entry| { entry.1 });
+
+                Box::new(iter2)
+            }
+
+        }*/
     }
 }
 

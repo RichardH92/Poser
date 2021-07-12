@@ -1,5 +1,6 @@
 use crate::domain::entity;
 
+pub mod entity_iterator;
 pub mod entity_query;
 pub mod node_impl;
 
@@ -9,13 +10,13 @@ pub enum AddEntitiesValidationErrors {
     EntityAlreadyExists
 }
 
-pub trait Node<Q: entity_query::EntityQuery>{
+pub trait Node<'a, Q: entity_query::EntityQuery, I: Iterator<Item = &'a entity::Entity>> {
     fn new() -> Self;
     fn add_entities(&mut self, entities: Vec<entity::Entity>) -> Result<(), Vec<AddEntitiesValidationErrors>>;
     fn remove_entities(&mut self, entity_ids: Vec<i32>);
     fn get_entity(&self, id: i32) -> Option<&entity::Entity>;
     fn new_query(&self) -> Q; 
-    fn execute_query(&self, query: &Q) -> Vec<&entity::Entity>;
+    fn execute_query<'b : 'a>(&self, query: &Q) -> I; 
 }
 
 #[cfg(test)]
