@@ -20,27 +20,6 @@ pub struct EntityQueryImpl {
     bound: Option<bound::Bound>
 }
 
-pub struct DataSource<'a: 'b, 'b> {
-    map_iter: Option<&'b mut std::collections::hash_map::Iter<'a, i32, entity::Entity>>
-}
-
-impl<'a: 'b, 'b> Iterator for DataSource<'a, 'b> {
-    type Item = &'a entity::Entity;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match &mut self.map_iter {
-            Some(iter) => match iter.next() {
-                Some(entry) => {
-                    let item : Self::Item = & entry.1;
-                    Some(item)
-                },
-                None => None
-            },
-            None => None
-        }
-    }
-}
-
 impl RTreeObject for entity::Entity {
     
     type Envelope = AABB<[f32; 3]>;
@@ -50,7 +29,7 @@ impl RTreeObject for entity::Entity {
     }
 }
 
-impl EntityQuery for EntityQueryImpl {
+impl<'a> EntityQuery for EntityQueryImpl {
 
     fn limit(&mut self, limit: u32) -> &mut Self {
         self.limit = limit;
