@@ -14,7 +14,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_get_entities_happy_path() {
+    fn test_execute_query_happy_path() {
         let mut node : NodeImpl = Node::new();
        
         let e1 = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
@@ -29,8 +29,28 @@ mod tests {
         assert_contains_entities(entities, vec![e1, e2, e3]);
     }
 
+
     #[test]
-    fn test_get_entities_filters_by_bound_correctly() {
+    fn test_execute_query_paginates_correctly() {
+        let mut node : NodeImpl = Node::new();
+       
+        let e1 = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        let e2 = entity::Entity { id: 2, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        let e3 = entity::Entity { id: 3, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        let e4 = entity::Entity { id: 4, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+
+        node.add_entities(vec![e1, e2, e3, e4]);
+        
+        let mut query = node.new_query();
+        query.offset(1).limit(2);
+
+        let entities = node.execute_query(&query); 
+
+        assert_contains_entities(entities, vec![e2, e3]);
+    }
+
+    #[test]
+    fn test_execute_query_filters_by_bound_correctly() {
         let mut node : NodeImpl = Node::new();
        
         let e1 = entity::Entity { id: 1, x_coordinate: -15.0, y_coordinate: -15.0, z_coordinate: -15.0 };
