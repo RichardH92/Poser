@@ -18,9 +18,9 @@ mod tests {
     fn test_execute_query_happy_path() {
         let mut service : ServiceImpl = Service::new();
        
-        let e1 = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
-        let e2 = entity::Entity { id: 2, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
-        let e3 = entity::Entity { id: 3, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        let e1 = entity::Entity { id: 1, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
+        let e2 = entity::Entity { id: 2, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
+        let e3 = entity::Entity { id: 3, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
 
         service.add_entities(vec![e1, e2, e3]);
         
@@ -36,10 +36,10 @@ mod tests {
     fn test_execute_query_paginates_correctly() {
         let mut service : ServiceImpl = Service::new();
        
-        let e1 = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
-        let e2 = entity::Entity { id: 2, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
-        let e3 = entity::Entity { id: 3, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
-        let e4 = entity::Entity { id: 4, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        let e1 = entity::Entity { id: 1, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
+        let e2 = entity::Entity { id: 2, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
+        let e3 = entity::Entity { id: 3, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
+        let e4 = entity::Entity { id: 4, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
 
         service.add_entities(vec![e1, e2, e3, e4]);
         
@@ -56,14 +56,14 @@ mod tests {
     fn test_execute_query_filters_by_bound_correctly() {
         let mut service : ServiceImpl = Service::new();
        
-        let e1 = entity::Entity { id: 1, x_coordinate: -15.0, y_coordinate: -15.0, z_coordinate: -15.0 };
-        let e2 = entity::Entity { id: 2, x_coordinate: 0.0, y_coordinate: 0.0, z_coordinate: 0.0 };
-        let e3 = entity::Entity { id: 3, x_coordinate: 15.0, y_coordinate: 15.0, z_coordinate: 15.0 };
+        let e1 = entity::Entity { id: 1, x_coordinate: -15, y_coordinate: -15, z_coordinate: -15 };
+        let e2 = entity::Entity { id: 2, x_coordinate: 0, y_coordinate: 0, z_coordinate: 0 };
+        let e3 = entity::Entity { id: 3, x_coordinate: 15, y_coordinate: 15, z_coordinate: 15 };
 
         service.add_entities(vec![e1, e2, e3]);
         
         let mut query = service.new_query();
-        query.bound(bound::Bound { x0: -1.0, x1: 1.0, y0: -1.0, y1: 1.0, z0: -1.0, z1: 1.0 });
+        query.bound(bound::Bound { x0: -1, x1: 1, y0: -1, y1: 1, z0: -1, z1: 1 });
         
         let entities1 = service.execute_query(&query);
         assert_contains_entities(entities1, vec![e2]);

@@ -25,7 +25,7 @@ mod tests {
     #[test]
     fn test_add_entities_happy_path() {
         let mut service : service_impl::ServiceImpl = Service::new();
-        let entity = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        let entity = entity::Entity { id: 1, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
 
         let result = service.add_entities(vec![entity]);
         match result {
@@ -33,7 +33,7 @@ mod tests {
             _ => (),
         }
 
-        let expected = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        let expected = entity::Entity { id: 1, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
         match service.get_entity(1) {
             Some(actual) => assert_eq!(expected, *actual),
             None => assert!(false, "Returned empty incorrectly"),
@@ -44,8 +44,8 @@ mod tests {
     fn test_add_entities_returns_error_when_entity_added_twice() {
         let mut service : service_impl::ServiceImpl = Service::new();
        
-        let e1 = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
-        let e2 = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        let e1 = entity::Entity { id: 1, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
+        let e2 = entity::Entity { id: 1, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
         
         let result = service.add_entities(vec![e1, e2]);
         match result {
@@ -62,8 +62,8 @@ mod tests {
     fn test_add_entities_returns_error_when_entity_already_exists() {
         let mut service : service_impl::ServiceImpl = Service::new();
        
-        let e1 = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
-        let e2 = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        let e1 = entity::Entity { id: 1, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
+        let e2 = entity::Entity { id: 1, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
         
         match service.add_entities(vec![e1]) {
             Err(_errs) => assert!(false, "Validation errors returned incorrectly"),
@@ -83,10 +83,10 @@ mod tests {
     fn test_add_entities_returns_multiple_validation_errors_correctly() {
         let mut service : service_impl::ServiceImpl = Service::new();
        
-        let e1 = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
-        let e2 = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
-        let e3 = entity::Entity { id: 2, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
-        let e4 = entity::Entity { id: 2, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        let e1 = entity::Entity { id: 1, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
+        let e2 = entity::Entity { id: 1, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
+        let e3 = entity::Entity { id: 2, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
+        let e4 = entity::Entity { id: 2, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
         
         match service.add_entities(vec![e1]) {
             Err(_errs) => assert!(false, "Validation errors returned incorrectly"),
@@ -108,7 +108,7 @@ mod tests {
     fn test_get_entity_returns_empty_when_entity_dne() {
         let mut service : service_impl::ServiceImpl = Service::new();
        
-        let entity = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        let entity = entity::Entity { id: 1, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
         service.add_entities(vec![entity]);
 
         match service.get_entity(2) {
@@ -128,7 +128,7 @@ mod tests {
     fn test_remove_entities_happy_path() {
         let mut service : service_impl::ServiceImpl = Service::new();
        
-        let entity = entity::Entity { id: 1, x_coordinate: 2.0, y_coordinate: 2.0, z_coordinate: 3.0 };
+        let entity = entity::Entity { id: 1, x_coordinate: 2, y_coordinate: 2, z_coordinate: 3 };
         service.add_entities(vec![entity]);
         service.remove_entities(vec![1]);
 

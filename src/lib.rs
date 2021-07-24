@@ -1,3 +1,3 @@
 
-mod service;
-mod domain;
+pub mod service;
+pub mod domain;

@@ -1,16 +1,67 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use service::service::Service;
+use service::service::service_impl::ServiceImpl;
+use service::domain::entity;
+use service::domain::bound;
+use service::service::service_impl::EntityQueryImpl;
+use service::service::entity_query::EntityQuery;
+use rand::Rng;
+use unchecked_unwrap::UncheckedUnwrap;
 
-fn fibonacci(n: u64) -> u64 {
-    match n {
-        0 => 1,
-        1 => 1,
-        n => fibonacci(n-1) + fibonacci(n-2),
+static mut service100k: Option<ServiceImpl> = None;
+
+fn setup() {
+    unsafe {
+        service100k = Some(initialize_service_with_random_points(100_000));
     }
 }
 
-fn criterion_benchmark(c: &mut Criterion) {
-    c.bench_function("fib 20", |b| b.iter(|| fibonacci(black_box(20))));
+fn initialize_service_with_random_points(num_points: i32) -> ServiceImpl {
+
+    let mut rng = rand::thread_rng();
+    let mut service : ServiceImpl = Service::new();
+    let mut entityVec : Vec<entity::Entity> = Vec::new();
+
+    for i in 0..100_000 {
+       let entity = entity::Entity {
+            id: i,
+            x_coordinate: rng.gen_range(0..1000),
+            y_coordinate: rng.gen_range(0..1000),
+            z_coordinate: rng.gen_range(0..1000),
+       };
+
+       entityVec.push(entity);
+    }
+    service.add_entities(entityVec);
+
+    service
 }
 
-criterion_group!(benches, criterion_benchmark);
+fn execute_query_with_bound_and_limit(limit: i32, service: &mut ServiceImpl) {
+    let mut rng = rand::thread_rng();
+
+    let bound = bound::Bound {
+       x0: rng.gen_range(0..250),
+       x1: rng.gen_range(750..1000),
+       y0: rng.gen_range(0..250),
+       y1: rng.gen_range(750..1000),
+       z0: rng.gen_range(0..250),
+       z1: rng.gen_range(750..1000),
+    };
+        
+    let mut query = service.new_query();
+    query.limit(100).bound(bound);
+
+    service.execute_query(&query);
+}
+
+fn benchmark_execute_query_bound_filter_100k_items_limit_100(c: &mut Criterion) {
+    setup();
+
+    unsafe {
+        let service = service100k.as_mut().unwrap();
+        c.bench_function("query 100k items with bound filter and limit 100", |b| b.iter(|| execute_query_with_bound_and_limit(100, service)));
+    }
+}
+criterion_group!(benches, benchmark_execute_query_bound_filter_100k_items_limit_100);
 criterion_main!(benches);

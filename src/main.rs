@@ -2,7 +2,7 @@ mod service;
 mod domain;
 
 fn main() {
-    let _e = domain::entity::Entity { id: 1, x_coordinate: 0.0, y_coordinate: 1.0, z_coordinate: 3.0 };
+    let _e = domain::entity::Entity { id: 1, x_coordinate: 0, y_coordinate: 1, z_coordinate: 3 };
     
     //let mut node = node::Node::new();
 

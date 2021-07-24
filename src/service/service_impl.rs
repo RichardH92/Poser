@@ -21,7 +21,7 @@ pub struct EntityQueryImpl {
 
 impl RTreeObject for entity::Entity {
     
-    type Envelope = AABB<[f32; 3]>;
+    type Envelope = AABB<[i32; 3]>;
 
     fn envelope(&self) -> Self::Envelope {
         AABB::from_point([self.x_coordinate, self.y_coordinate, self.z_coordinate])
