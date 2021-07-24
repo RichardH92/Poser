@@ -104,6 +104,7 @@ mod tests {
     }
 
     #[test]
+    #[allow(unused_must_use)]
     fn test_get_entity_returns_empty_when_entity_dne() {
         let mut service : service_impl::ServiceImpl = Service::new();
        
@@ -123,6 +124,7 @@ mod tests {
     }
 
     #[test]
+    #[allow(unused_must_use)]
     fn test_remove_entities_happy_path() {
         let mut service : service_impl::ServiceImpl = Service::new();
        

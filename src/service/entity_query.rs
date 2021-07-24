@@ -1,7 +1,4 @@
-use crate::domain::entity;
 use crate::domain::bound;
-use crate::service::Service;
-use crate::service::service_impl::ServiceImpl;
 
 pub trait EntityQuery {
     fn limit(&mut self, limit: u32) -> &mut Self;
@@ -12,8 +9,12 @@ pub trait EntityQuery {
 #[cfg(test)]
 mod tests {
     use super::*;
-
+    use crate::domain::entity;
+    use crate::service::Service;
+    use crate::service::service_impl::ServiceImpl;
+    
     #[test]
+    #[allow(unused_must_use)]
     fn test_execute_query_happy_path() {
         let mut service : ServiceImpl = Service::new();
        
@@ -31,6 +32,7 @@ mod tests {
 
 
     #[test]
+    #[allow(unused_must_use)]
     fn test_execute_query_paginates_correctly() {
         let mut service : ServiceImpl = Service::new();
        
@@ -50,6 +52,7 @@ mod tests {
     }
 
     #[test]
+    #[allow(unused_must_use)]
     fn test_execute_query_filters_by_bound_correctly() {
         let mut service : ServiceImpl = Service::new();
        
