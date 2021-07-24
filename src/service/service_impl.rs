@@ -1,15 +1,14 @@
 use rstar::RTree;
 use rstar::RTreeObject;
 use rstar::AABB;
-use crate::node::Node;
-use crate::node::AddEntitiesValidationErrors;
+use crate::service::Service;
+use crate::service::AddEntitiesValidationErrors;
 use crate::domain::entity;
 use crate::domain::bound;
-use crate::node::entity_query::EntityQuery;
-use crate::node::entity_iterator::EntityIterator;
+use crate::service::entity_query::EntityQuery;
 use std::collections::HashMap;
 
-pub struct NodeImpl {
+pub struct ServiceImpl {
     tree: RTree<entity::Entity>,
     map: HashMap<i32, entity::Entity>
 }
@@ -47,10 +46,10 @@ impl<'a> EntityQuery for EntityQueryImpl {
     }
 }
 
-impl<'a> Node<'a, EntityQueryImpl> for NodeImpl {
+impl<'a> Service<'a, EntityQueryImpl> for ServiceImpl {
 
-    fn new() -> NodeImpl {
-        NodeImpl { 
+    fn new() -> ServiceImpl {
+        ServiceImpl { 
             tree: RTree::new(),
             map: HashMap::new()
         }

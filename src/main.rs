@@ -1,4 +1,4 @@
-mod node;
+mod service;
 mod domain;
 
 fn main() {
