@@ -125,38 +125,14 @@ impl<'a> Node<'a, EntityQueryImpl> for NodeImpl {
     }
 
     fn execute_query<'b>(&'b mut self, query: &EntityQueryImpl) -> Vec<&entity::Entity> {
-        self.tree.iter().collect()
-    }
-
-    /* fn execute_query<'b>(&'b mut self, query: &EntityQueryImpl) -> Box<dyn Iterator<Item = &'a entity::Entity>> {
-       
-        let iter : &'b mut std::collections::hash_map::Iter<'a, i32, entity::Entity> = &mut self.map.iter();
-       
-        Box::new(DataSource {
-            map_iter: Some(iter)
-        })
-        /*EntityIteratorImpl {
-            map_iter: &'bmut self.map.iter(),
-        }*/
-        //Box::new(self.map.iter())
-
-        /*let iter = self.map.iter();
-        Box::new(&iter);*/
-
-        /*match query.bound {
-            Some(bound) => { 
+        match query.bound {
+            Some(bound) => {
                 let b = AABB::from_corners([bound.x0, bound.y0, bound.z0], [bound.x1, bound.y1, bound.z1]);
-                return Box::new(self.tree.locate_in_envelope(&b));
+                self.tree.locate_in_envelope(&b).collect()
             },
-            _ => {
-                let mut iter = self.map.iter();
-                let mut iter2 = iter.map(|entry| { entry.1 });
-
-                Box::new(iter2)
-            }
-
-        }*/
-    } */
+            None => self.tree.iter().collect()
+        }
+    }
 }
 
 

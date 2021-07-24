@@ -17,7 +17,6 @@ pub trait Node<'a, Q: entity_query::EntityQuery> {
     fn get_entity(&self, id: i32) -> Option<&entity::Entity>;
     fn new_query(&self) -> Q; 
     fn execute_query<'b>(&'b mut self, query: &Q) -> Vec<&entity::Entity>;
-    // fn execute_query<'b>(&'b mut self, query: &Q) -> Box<dyn Iterator<Item = &'a entity::Entity>>;
 }
 
 #[cfg(test)]
