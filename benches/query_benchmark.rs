@@ -22,7 +22,7 @@ fn initialize_service_with_random_points(num_points: i32) -> ServiceImpl {
     let mut service : ServiceImpl = Service::new();
     let mut entityVec : Vec<entity::Entity> = Vec::new();
 
-    for i in 0..100_000 {
+    for i in 0..num_points {
        let entity = entity::Entity {
             id: i,
             x_coordinate: rng.gen_range(0..1000),
@@ -37,7 +37,7 @@ fn initialize_service_with_random_points(num_points: i32) -> ServiceImpl {
     service
 }
 
-fn execute_query_with_bound_and_limit(limit: i32, service: &mut ServiceImpl) {
+fn execute_query_with_bound_and_limit(limit: u32, service: &mut ServiceImpl) {
     let mut rng = rand::thread_rng();
 
     let bound = bound::Bound {
@@ -50,9 +50,18 @@ fn execute_query_with_bound_and_limit(limit: i32, service: &mut ServiceImpl) {
     };
         
     let mut query = service.new_query();
-    query.limit(100).bound(bound);
+    query.limit(limit).bound(bound);
 
     service.execute_query(&query);
+}
+
+fn benchmark_execute_query_bound_filter_100k_items_limit_1000(c: &mut Criterion) {
+    setup();
+
+    unsafe {
+        let service = service100k.as_mut().unwrap();
+        c.bench_function("query 100k items with bound filter and limit 1000", |b| b.iter(|| execute_query_with_bound_and_limit(1000, service)));
+    }
 }
 
 fn benchmark_execute_query_bound_filter_100k_items_limit_100(c: &mut Criterion) {
@@ -63,5 +72,6 @@ fn benchmark_execute_query_bound_filter_100k_items_limit_100(c: &mut Criterion) 
         c.bench_function("query 100k items with bound filter and limit 100", |b| b.iter(|| execute_query_with_bound_and_limit(100, service)));
     }
 }
-criterion_group!(benches, benchmark_execute_query_bound_filter_100k_items_limit_100);
+
+criterion_group!(benches, benchmark_execute_query_bound_filter_100k_items_limit_100, benchmark_execute_query_bound_filter_100k_items_limit_1000);
 criterion_main!(benches);
