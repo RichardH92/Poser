@@ -24,7 +24,7 @@ mod tests {
         node.add_entities(vec![e1, e2, e3]);
         
         let query = node.new_query();
-        let entities = node.execute_query(&query).collect(); 
+        let entities = node.execute_query(&query); 
 
         assert_contains_entities(entities, vec![e1, e2, e3]);
     }
@@ -42,10 +42,10 @@ mod tests {
         let mut query = node.new_query();
         query.bound(bound::Bound { x0: -1.0, x1: 1.0, y0: -1.0, y1: 1.0, z0: -1.0, z1: 1.0 });
         
-        let entities1 = node.execute_query(&query).collect(); 
+        let entities1 = node.execute_query(&query);
         assert_contains_entities(entities1, vec![e2]);
         
-        let entities2 = node.execute_query(&query).collect(); 
+        let entities2 = node.execute_query(&query);
         assert_not_contains_entities(entities2, vec![e1, e3]);
     }
 

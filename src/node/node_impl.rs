@@ -20,16 +20,22 @@ pub struct EntityQueryImpl {
     bound: Option<bound::Bound>
 }
 
-pub struct EntityIteratorImpl<'service, 'iterator : 'service> {
-    map_iter: &'iterator mut std::collections::hash_map::Iter<'service, i32, entity::Entity> 
+pub struct DataSource<'a: 'b, 'b> {
+    map_iter: Option<&'b mut std::collections::hash_map::Iter<'a, i32, entity::Entity>>
 }
 
-impl<'service, 'iterator : 'service> Iterator for EntityIteratorImpl<'service, 'iterator> {
-    type Item = &'service entity::Entity;
+impl<'a: 'b, 'b> Iterator for DataSource<'a, 'b> {
+    type Item = &'a entity::Entity;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self.map_iter.next() {
-            Some(item) => Some(item.1),
+        match &mut self.map_iter {
+            Some(iter) => match iter.next() {
+                Some(entry) => {
+                    let item : Self::Item = & entry.1;
+                    Some(item)
+                },
+                None => None
+            },
             None => None
         }
     }
@@ -43,7 +49,6 @@ impl RTreeObject for entity::Entity {
         AABB::from_point([self.x_coordinate, self.y_coordinate, self.z_coordinate])
     }
 }
-
 
 impl EntityQuery for EntityQueryImpl {
 
@@ -63,7 +68,7 @@ impl EntityQuery for EntityQueryImpl {
     }
 }
 
-impl<'a> Node<'a, EntityQueryImpl, EntityIteratorImpl<'a, '_>> for NodeImpl {
+impl<'a> Node<'a, EntityQueryImpl> for NodeImpl {
 
     fn new() -> NodeImpl {
         NodeImpl { 
@@ -108,7 +113,7 @@ impl<'a> Node<'a, EntityQueryImpl, EntityIteratorImpl<'a, '_>> for NodeImpl {
     }
 
     fn get_entity(&self, id: i32) -> Option<&entity::Entity> {
-        self.map.get(&id) 
+        self.map.get(&id)
     }
     
     fn new_query(&self) -> EntityQueryImpl {
@@ -119,11 +124,24 @@ impl<'a> Node<'a, EntityQueryImpl, EntityIteratorImpl<'a, '_>> for NodeImpl {
         }
     }
 
-    fn execute_query<'b : 'a>(&self, query: &EntityQueryImpl) -> EntityIteratorImpl<'a, 'b> {
+    fn execute_query<'b>(&'b mut self, query: &EntityQueryImpl) -> Vec<&entity::Entity> {
+        self.tree.iter().collect()
+    }
+
+    /* fn execute_query<'b>(&'b mut self, query: &EntityQueryImpl) -> Box<dyn Iterator<Item = &'a entity::Entity>> {
        
-        EntityIteratorImpl {
-            map_iter: &mut self.map.iter(),
-        }
+        let iter : &'b mut std::collections::hash_map::Iter<'a, i32, entity::Entity> = &mut self.map.iter();
+       
+        Box::new(DataSource {
+            map_iter: Some(iter)
+        })
+        /*EntityIteratorImpl {
+            map_iter: &'bmut self.map.iter(),
+        }*/
+        //Box::new(self.map.iter())
+
+        /*let iter = self.map.iter();
+        Box::new(&iter);*/
 
         /*match query.bound {
             Some(bound) => { 
@@ -138,7 +156,7 @@ impl<'a> Node<'a, EntityQueryImpl, EntityIteratorImpl<'a, '_>> for NodeImpl {
             }
 
         }*/
-    }
+    } */
 }
 
 
