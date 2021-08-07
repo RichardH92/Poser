@@ -7,10 +7,16 @@ use crate::domain::entity;
 use crate::domain::bound;
 use crate::service::entity_query::EntityQuery;
 use std::collections::HashMap;
+use event_logger::service::event_log_impl::EventLogImpl;
+use event_logger::service::EventLog;
+use event_logger::repository::event_repository_impl::EventRepositoryImpl;
+use event_logger::repository::EventRepository;
+use event_logger::domain::event::Event;
 
 pub struct ServiceImpl {
     tree: RTree<entity::Entity>,
-    map: HashMap<i32, entity::Entity>
+    map: HashMap<i32, entity::Entity>,
+    event_log: EventLogImpl
 }
 
 pub struct EntityQueryImpl {
@@ -46,12 +52,14 @@ impl<'a> EntityQuery for EntityQueryImpl {
     }
 }
 
+
 impl<'a> Service<'a, EntityQueryImpl> for ServiceImpl {
 
     fn new() -> ServiceImpl {
         ServiceImpl { 
             tree: RTree::new(),
-            map: HashMap::new()
+            map: HashMap::new(),
+            event_log: EventLog::new(EventRepository::new("event-log".to_string()))
         }
     }
 
@@ -67,8 +75,18 @@ impl<'a> Service<'a, EntityQueryImpl> for ServiceImpl {
                match self.map.get(&entity.id) {
                    Some(_e) => errs.push(AddEntitiesValidationErrors::EntityAlreadyExists),
                    _ => { 
-                       self.map.insert(entity.id, entity.clone());
-                       self.tree.insert(entity.clone());
+                        let mut params : HashMap<String, String> = HashMap::new();
+
+                        params.insert("id".to_string(), "test123".to_string());
+
+                        let event = Event {
+                            event_type_key: "upsert-entity".to_string(),
+                            params: params
+                        };
+
+                        self.event_log.log_event(event);
+                        self.map.insert(entity.id, entity.clone());
+                        self.tree.insert(entity.clone());
                    },
                }
             }
