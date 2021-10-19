@@ -2,13 +2,34 @@ syntax = "proto3";
 package poser;
 
 service Poser {
-    rpc GetEntities (GetEntitiesRequest) returns (EntityCollection);
+    rpc GetEntities (GetEntitiesRequest) returns (EntityPage);
+    rpc AddEntities (AddEntitiesRequest) returns (AddEntitiesResponse);
+}
+
+message Entity {
+    uint32 id = 1;
+    int32 x = 2;
+    int32 y = 3;
+    int32 z = 4;
+}
+
+message EntityPage {
+    repeated Entity entities = 5;
+    uint32 total = 6;
+}
+
+message AddEntitiesRequest {
+    repeated Entity entities = 7;
+}
+
+message AddEntitiesResponse {
+    string name = 8;
 }
 
 message GetEntitiesRequest {
-    string name = 1;
+    string name = 9;
 }
 
 message EntityCollection {
-    string name = 1;
+    string name = 10;
 }

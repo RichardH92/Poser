@@ -1,7 +1,7 @@
 use tonic::{transport::Server, Request, Response, Status};
 
 use poser::poser_server::{Poser, PoserServer};
-use poser::{EntityCollection, GetEntitiesRequest};
+use poser::{EntityPage, GetEntitiesRequest, AddEntitiesRequest, AddEntitiesResponse};
 
 mod service;
 mod domain;
@@ -43,14 +43,28 @@ pub struct PoserImpl {}
 
 #[tonic::async_trait]
 impl Poser for PoserImpl {
+
+    async fn add_entities(
+        &self,
+        request: Request<AddEntitiesRequest>,
+    ) -> Result<Response<AddEntitiesResponse>, Status> {
+
+        let reply = poser::AddEntitiesResponse {
+            name: "Hello!".to_string()
+        };
+
+        Ok(Response::new(reply))
+    }
+
     async fn get_entities(
         &self,
         request: Request<GetEntitiesRequest>, // Accept request of type HelloRequest
-    ) -> Result<Response<EntityCollection>, Status> { // Return an instance of type HelloReply
+    ) -> Result<Response<EntityPage>, Status> { // Return an instance of type HelloReply
         println!("Got a request: {:?}", request);
 
-        let reply = poser::EntityCollection {
-            name: format!("Hello {}!", request.into_inner().name).into(), // We must use .into_inner() as the fields of gRPC requests and responses are private
+        let reply = poser::EntityPage {
+            entities: [].to_vec(),
+            total: 0,
         };
 
         Ok(Response::new(reply)) // Send back our formatted greeting
