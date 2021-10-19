@@ -1,0 +1,14 @@
+syntax = "proto3";
+package poser;
+
+service Poser {
+    rpc GetEntities (GetEntitiesRequest) returns (EntityCollection);
+}
+
+message GetEntitiesRequest {
+    string name = 1;
+}
+
+message EntityCollection {
+    string name = 1;
+}
