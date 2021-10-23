@@ -3,6 +3,8 @@ use tonic::{transport::Server, Request, Response, Status};
 use poser::poser_server::{Poser, PoserServer};
 use poser::{EntityPage, GetEntitiesRequest, AddEntitiesRequest, AddEntitiesResponse};
 
+use std::sync::{RwLock, Arc, mpsc::channel};
+
 mod service;
 mod domain;
 
@@ -28,18 +30,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Test 123");
 
     let addr = "[::1]:50051".parse()?;
-    let greeter = PoserImpl::default();
+    let poser = PoserImpl{
+        service: RwLock::new(service::Service::new())
+    };
 
     Server::builder()
-        .add_service(PoserServer::new(greeter))
+        .add_service(PoserServer::new(poser))
         .serve(addr)
         .await?;
 
     Ok(())
 }
 
-#[derive(Debug, Default)]
-pub struct PoserImpl {}
+pub struct PoserImpl {
+    service: RwLock<service::service_impl::ServiceImpl>
+}
 
 #[tonic::async_trait]
 impl Poser for PoserImpl {
@@ -48,6 +53,10 @@ impl Poser for PoserImpl {
         &self,
         request: Request<AddEntitiesRequest>,
     ) -> Result<Response<AddEntitiesResponse>, Status> {
+
+        let addEntitiesReq = request.into_inner();
+        
+        println!("Got an add entities request: {:?}", addEntitiesReq);
 
         let reply = poser::AddEntitiesResponse {
             name: "Hello!".to_string()
