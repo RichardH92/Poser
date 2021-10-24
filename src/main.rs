@@ -11,8 +11,6 @@ pub mod poser {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
-    println!("Test 123");
-
     let addr = "[::1]:50051".parse()?;
 
     Server::builder()
