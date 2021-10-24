@@ -7,6 +7,7 @@ use std::sync::{RwLock, Arc, mpsc::channel};
 
 mod service;
 mod domain;
+mod grpc;
 
 /*fn main() {
     let _e = domain::entity::Entity { id: 1, x_coordinate: 0, y_coordinate: 1, z_coordinate: 3 };
@@ -30,52 +31,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Test 123");
 
     let addr = "[::1]:50051".parse()?;
-    let poser = PoserImpl{
-        service: RwLock::new(service::Service::new())
-    };
 
     Server::builder()
-        .add_service(PoserServer::new(poser))
+        .add_service(grpc::controller::init())
         .serve(addr)
         .await?;
 
     Ok(())
-}
-
-pub struct PoserImpl {
-    service: RwLock<service::service_impl::ServiceImpl>
-}
-
-#[tonic::async_trait]
-impl Poser for PoserImpl {
-
-    async fn add_entities(
-        &self,
-        request: Request<AddEntitiesRequest>,
-    ) -> Result<Response<AddEntitiesResponse>, Status> {
-
-        let addEntitiesReq = request.into_inner();
-        
-        println!("Got an add entities request: {:?}", addEntitiesReq);
-
-        let reply = poser::AddEntitiesResponse {
-            name: "Hello!".to_string()
-        };
-
-        Ok(Response::new(reply))
-    }
-
-    async fn get_entities(
-        &self,
-        request: Request<GetEntitiesRequest>, // Accept request of type HelloRequest
-    ) -> Result<Response<EntityPage>, Status> { // Return an instance of type HelloReply
-        println!("Got a request: {:?}", request);
-
-        let reply = poser::EntityPage {
-            entities: [].to_vec(),
-            total: 0,
-        };
-
-        Ok(Response::new(reply)) // Send back our formatted greeting
-    }
 }
