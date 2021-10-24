@@ -3,7 +3,7 @@ use crate::poser::poser_server::{Poser, PoserServer};
 use crate::poser::{EntityPage, GetEntitiesRequest, AddEntitiesRequest, AddEntitiesResponse};
 use crate::service::service_impl::ServiceImpl;
 use crate::service::Service;
-//use crate::domain::bound;
+use crate::grpc::mapper;
 
 use std::sync::{RwLock, Arc, mpsc::channel};
 
@@ -26,8 +26,8 @@ impl Poser for PoserImpl {
     ) -> Result<Response<AddEntitiesResponse>, Status> {
 
         let addEntitiesReq = request.into_inner();
-        
-        println!("Got an add entities request: {:?}", addEntitiesReq);
+
+        let entities = mapper::mapAddEntitiesRequestToDomain(addEntitiesReq);
 
         let reply = AddEntitiesResponse {
             name: "Hello!".to_string()
