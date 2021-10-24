@@ -44,8 +44,19 @@ message GetEntityRequest {
     uint32 id = 12;
 }
 
+message Bound {
+    int32 x0 = 15;
+    int32 x1 = 16;
+    int32 y0 = 17;
+    int32 y1 = 18;
+    int32 z0 = 19;
+    int32 z1 = 20;
+}
+
 message GetEntitiesRequest {
-    string name = 9;
+    uint32 limit = 13;
+    uint32 offset = 14;
+    Bound bound = 21;
 }
 
 message EntityCollection {

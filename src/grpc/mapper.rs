@@ -1,6 +1,14 @@
-use crate::poser::{EntityPage, GetEntitiesRequest, AddEntitiesRequest, AddEntitiesResponse};
+use crate::poser::{
+    EntityPage, 
+    GetEntitiesRequest, 
+    AddEntitiesRequest, 
+    AddEntitiesResponse
+};
 use crate::domain::entity::Entity;
 use crate::service::AddEntitiesValidationErrors;
+use crate::service::service_impl::EntityQueryImpl;
+use crate::service::entity_query::EntityQuery;
+
 
 pub fn map_add_entities_request_to_domain(req: AddEntitiesRequest) -> Vec<Entity> {
     let mut ret : Vec<Entity> = Vec::new();
@@ -20,7 +28,7 @@ pub fn map_add_entities_request_to_domain(req: AddEntitiesRequest) -> Vec<Entity
 }
 
 pub fn map_entities_to_api_response(entities: Vec<&Entity>) -> EntityPage {
-    let mut entityPage = EntityPage {
+    let mut entity_page = EntityPage {
         entities: Vec::new(),
         total: 0
     };
@@ -33,10 +41,35 @@ pub fn map_entities_to_api_response(entities: Vec<&Entity>) -> EntityPage {
             z: entity.z_coordinate,
         };
 
-        entityPage.entities.push(e);
+        entity_page.entities.push(e);
     }
 
-    return entityPage;
+    return entity_page;
+}
+
+pub fn apply_query_critera(request: GetEntitiesRequest, mut query: EntityQueryImpl) -> EntityQueryImpl {
+
+    if request.limit > 0 {
+        if request.limit > 10000 {
+            query.limit(10000);
+        } else {
+            query.limit(request.limit);
+        }
+    } else {
+        query.limit(1000);
+    }
+
+    return query;
+}
+
+fn get_limit(request: GetEntitiesRequest) -> u32 {
+
+    return 1;
+}
+
+fn get_offset(request: GetEntitiesRequest) -> u32 {
+
+    return 0;
 }
 
 pub fn map_add_validation_errors_to_api_response(result: Result<(), Vec<AddEntitiesValidationErrors>>) -> AddEntitiesResponse {

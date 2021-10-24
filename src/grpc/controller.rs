@@ -1,4 +1,4 @@
-use tonic::{transport::Server, Request, Response, Status, Streaming};
+use tonic::{Request, Response, Status};
 use crate::poser::poser_server::{Poser, PoserServer};
 use crate::poser::{
     EntityPage, 
@@ -13,7 +13,7 @@ use crate::service::service_impl::ServiceImpl;
 use crate::service::Service;
 use crate::grpc::mapper;
 
-use std::sync::{RwLock, Arc, mpsc::channel};
+use std::sync::{RwLock};
 
 pub struct PoserImpl {
     service_lock: RwLock<ServiceImpl>
@@ -30,7 +30,7 @@ impl Poser for PoserImpl {
 
     async fn get_entity(
         &self,
-        request: Request<GetEntityRequest>,
+        _request: Request<GetEntityRequest>,
     ) -> Result<Response<crate::poser::Entity>, Status> {
 
         Err(Status::unimplemented("not implemented"))
@@ -38,7 +38,7 @@ impl Poser for PoserImpl {
 
     async fn remove_entities(
         &self,
-        request: Request<RemoveEntitiesRequest>,
+        _request: Request<RemoveEntitiesRequest>,
     ) -> Result<Response<RemoveEntitiesResponse>, Status> {
 
         Err(Status::unimplemented("not implemented"))
@@ -49,8 +49,8 @@ impl Poser for PoserImpl {
         request: Request<AddEntitiesRequest>,
     ) -> Result<Response<AddEntitiesResponse>, Status> {
 
-        let addEntitiesReq = request.into_inner();
-        let entities = mapper::map_add_entities_request_to_domain(addEntitiesReq);
+        let add_entities_req = request.into_inner();
+        let entities = mapper::map_add_entities_request_to_domain(add_entities_req);
         let mut service = self.service_lock.write().unwrap();
         let result = service.add_entities(entities);
         
@@ -59,14 +59,15 @@ impl Poser for PoserImpl {
 
     async fn get_entities(
         &self,
-        request: Request<GetEntitiesRequest>, // Accept request of type HelloRequest
-    ) -> Result<Response<EntityPage>, Status> { // Return an instance of type HelloReply
+        request: Request<GetEntitiesRequest>,
+    ) -> Result<Response<EntityPage>, Status> {
         
         println!("Got a request: {:?}", request);
 
         let service = self.service_lock.read().unwrap();
-        let query = service.new_query();
-        let entities = service.execute_query(&query); 
+        let mut query = service.new_query();
+        let filtered_query = mapper::apply_query_critera(request.into_inner(), query);
+        let entities = service.execute_query(&filtered_query); 
 
         Ok(Response::new(mapper::map_entities_to_api_response(entities)))
     }
