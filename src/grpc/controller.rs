@@ -1,6 +1,14 @@
-use tonic::{transport::Server, Request, Response, Status};
+use tonic::{transport::Server, Request, Response, Status, Streaming};
 use crate::poser::poser_server::{Poser, PoserServer};
-use crate::poser::{EntityPage, GetEntitiesRequest, AddEntitiesRequest, AddEntitiesResponse};
+use crate::poser::{
+    EntityPage, 
+    GetEntitiesRequest, 
+    AddEntitiesRequest, 
+    AddEntitiesResponse, 
+    GetEntityRequest, 
+    RemoveEntitiesRequest, 
+    RemoveEntitiesResponse
+};
 use crate::service::service_impl::ServiceImpl;
 use crate::service::Service;
 use crate::grpc::mapper;
@@ -19,6 +27,22 @@ pub fn init() -> PoserServer<PoserImpl> {
 
 #[tonic::async_trait]
 impl Poser for PoserImpl {
+
+    async fn get_entity(
+        &self,
+        request: Request<GetEntityRequest>,
+    ) -> Result<Response<crate::poser::Entity>, Status> {
+
+        Err(Status::unimplemented("not implemented"))
+    }
+
+    async fn remove_entities(
+        &self,
+        request: Request<RemoveEntitiesRequest>,
+    ) -> Result<Response<RemoveEntitiesResponse>, Status> {
+
+        Err(Status::unimplemented("not implemented"))
+    }
 
     async fn add_entities(
         &self,

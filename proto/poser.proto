@@ -4,6 +4,8 @@ package poser;
 service Poser {
     rpc GetEntities (GetEntitiesRequest) returns (EntityPage);
     rpc AddEntities (AddEntitiesRequest) returns (AddEntitiesResponse);
+    rpc RemoveEntities(RemoveEntitiesRequest) returns (RemoveEntitiesResponse);
+    rpc GetEntity (GetEntityRequest) returns (Entity);
 }
 
 message Entity {
@@ -28,6 +30,18 @@ message AddEntitiesResponse {
         EntityAlreadExists = 1;
     }
     repeated AddEntitiesValidationError errors = 33;
+}
+
+message RemoveEntitiesRequest {
+    repeated uint32 ids = 11;
+}
+
+message RemoveEntitiesResponse {
+
+}
+
+message GetEntityRequest {
+    uint32 id = 12;
 }
 
 message GetEntitiesRequest {
