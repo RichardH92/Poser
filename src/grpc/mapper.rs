@@ -2,10 +2,19 @@ use crate::poser::{EntityPage, GetEntitiesRequest, AddEntitiesRequest, AddEntiti
 use crate::domain::entity::Entity;
 
 
-pub fn mapAddEntitiesRequestToDomain(req: AddEntitiesRequest) -> Vec<Entity> {
-    let ret = vec!();
+pub fn map_add_entities_request_to_domain(req: AddEntitiesRequest) -> Vec<Entity> {
+    let mut ret : Vec<Entity> = Vec::new();
 
-    println!("{:?}", req.entities);
+    for entity in req.entities {
+        let domain = Entity{
+            id: entity.id,
+            x_coordinate: entity.x,
+            y_coordinate: entity.y,
+            z_coordinate: entity.z,
+        };
+
+        ret.push(domain);
+    }
 
     return ret;
 }

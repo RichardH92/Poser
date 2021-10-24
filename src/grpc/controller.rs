@@ -8,12 +8,12 @@ use crate::grpc::mapper;
 use std::sync::{RwLock, Arc, mpsc::channel};
 
 pub struct PoserImpl {
-    service: RwLock<ServiceImpl>
+    service_lock: RwLock<ServiceImpl>
 }
 
 pub fn init() -> PoserServer<PoserImpl> {
     return PoserServer::new(PoserImpl{
-        service: RwLock::new(Service::new())
+        service_lock: RwLock::new(Service::new())
     });
 }
 
@@ -27,7 +27,11 @@ impl Poser for PoserImpl {
 
         let addEntitiesReq = request.into_inner();
 
-        let entities = mapper::mapAddEntitiesRequestToDomain(addEntitiesReq);
+        let entities = mapper::map_add_entities_request_to_domain(addEntitiesReq);
+
+        let mut service = self.service_lock.write().unwrap();
+
+        let result = service.add_entities(entities);
 
         let reply = AddEntitiesResponse {
             name: "Hello!".to_string()

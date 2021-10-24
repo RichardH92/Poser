@@ -12,8 +12,8 @@ pub enum AddEntitiesValidationErrors {
 pub trait Service<'a, Q: entity_query::EntityQuery> {
     fn new() -> Self;
     fn add_entities(&mut self, entities: Vec<entity::Entity>) -> Result<(), Vec<AddEntitiesValidationErrors>>;
-    fn remove_entities(&mut self, entity_ids: Vec<i32>);
-    fn get_entity(&self, id: i32) -> Option<&entity::Entity>;
+    fn remove_entities(&mut self, entity_ids: Vec<u32>);
+    fn get_entity(&self, id: u32) -> Option<&entity::Entity>;
     fn new_query(&self) -> Q; 
     fn execute_query<'b>(&'b mut self, query: &Q) -> Vec<&entity::Entity>;
 }

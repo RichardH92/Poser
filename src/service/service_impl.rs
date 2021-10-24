@@ -15,7 +15,7 @@ use event_logger::domain::event::Event;
 
 pub struct ServiceImpl {
     tree: RTree<entity::Entity>,
-    map: HashMap<i32, entity::Entity>,
+    map: HashMap<u32, entity::Entity>,
     event_log: EventLogImpl
 }
 
@@ -65,7 +65,7 @@ impl<'a> Service<'a, EntityQueryImpl> for ServiceImpl {
 
     fn add_entities(&mut self, entities: Vec<entity::Entity>) -> Result<(), Vec<AddEntitiesValidationErrors>> {
         let mut errs : Vec<AddEntitiesValidationErrors> = Vec::new();
-        let mut seen_ids : Vec<i32> = Vec::new();
+        let mut seen_ids : Vec<u32> = Vec::new();
 
         for entity in entities.iter() {
             if seen_ids.contains(&entity.id) {
@@ -99,7 +99,7 @@ impl<'a> Service<'a, EntityQueryImpl> for ServiceImpl {
         Err(errs) 
     }
 
-    fn remove_entities(&mut self, entity_ids: Vec<i32>) {
+    fn remove_entities(&mut self, entity_ids: Vec<u32>) {
         for id in entity_ids.iter() {
             match self.map.remove(id) {
                 Some(entity) => { self.tree.remove(&entity); },
@@ -108,7 +108,7 @@ impl<'a> Service<'a, EntityQueryImpl> for ServiceImpl {
         }
     }
 
-    fn get_entity(&self, id: i32) -> Option<&entity::Entity> {
+    fn get_entity(&self, id: u32) -> Option<&entity::Entity> {
         self.map.get(&id)
     }
     
