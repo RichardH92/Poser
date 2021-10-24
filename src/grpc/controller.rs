@@ -44,13 +44,9 @@ impl Poser for PoserImpl {
         &self,
         request: Request<GetEntitiesRequest>, // Accept request of type HelloRequest
     ) -> Result<Response<EntityPage>, Status> { // Return an instance of type HelloReply
+        
         println!("Got a request: {:?}", request);
 
-        let reply = EntityPage {
-            entities: [].to_vec(),
-            total: 0,
-        };
-
-        Ok(Response::new(reply)) // Send back our formatted greeting
+        Ok(Response::new(mapper::map_entities_to_api_response(Vec::new())))
     }
 }

@@ -18,3 +18,12 @@ pub fn map_add_entities_request_to_domain(req: AddEntitiesRequest) -> Vec<Entity
 
     return ret;
 }
+
+pub fn map_entities_to_api_response(entities: Vec<Entity>) -> EntityPage {
+    let mut entityPage = EntityPage {
+        entities: Vec::new(),
+        total: 0
+    };
+
+    return entityPage;
+}
