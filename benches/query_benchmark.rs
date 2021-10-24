@@ -16,7 +16,7 @@ fn setup() {
     }
 }
 
-fn initialize_service_with_random_points(num_points: i32) -> ServiceImpl {
+fn initialize_service_with_random_points(num_points: u32) -> ServiceImpl {
 
     let mut rng = rand::thread_rng();
     let mut service : ServiceImpl = Service::new();

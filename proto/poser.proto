@@ -1,0 +1,64 @@
+syntax = "proto3";
+package poser;
+
+service Poser {
+    rpc GetEntities (GetEntitiesRequest) returns (EntityPage);
+    rpc AddEntities (AddEntitiesRequest) returns (AddEntitiesResponse);
+    rpc RemoveEntities(RemoveEntitiesRequest) returns (RemoveEntitiesResponse);
+    rpc GetEntity (GetEntityRequest) returns (Entity);
+}
+
+message Entity {
+    uint32 id = 1;
+    int32 x = 2;
+    int32 y = 3;
+    int32 z = 4;
+}
+
+message EntityPage {
+    repeated Entity entities = 5;
+    uint32 total = 6;
+}
+
+message AddEntitiesRequest {
+    repeated Entity entities = 7;
+}
+
+message AddEntitiesResponse {
+    enum AddEntitiesValidationError {
+        EntityAddedTwice = 0;
+        EntityAlreadExists = 1;
+    }
+    repeated AddEntitiesValidationError errors = 33;
+}
+
+message RemoveEntitiesRequest {
+    repeated uint32 ids = 11;
+}
+
+message RemoveEntitiesResponse {
+
+}
+
+message GetEntityRequest {
+    uint32 id = 12;
+}
+
+message Bound {
+    int32 x0 = 15;
+    int32 x1 = 16;
+    int32 y0 = 17;
+    int32 y1 = 18;
+    int32 z0 = 19;
+    int32 z1 = 20;
+}
+
+message GetEntitiesRequest {
+    uint32 limit = 13;
+    uint32 offset = 14;
+    Bound bound = 21;
+}
+
+message EntityCollection {
+    string name = 10;
+}
