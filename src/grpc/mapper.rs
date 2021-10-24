@@ -2,7 +2,8 @@ use crate::poser::{
     EntityPage, 
     GetEntitiesRequest, 
     AddEntitiesRequest, 
-    AddEntitiesResponse
+    AddEntitiesResponse,
+    Bound
 };
 use crate::domain::entity::Entity;
 use crate::service::AddEntitiesValidationErrors;
@@ -51,6 +52,12 @@ pub fn apply_query_critera(request: GetEntitiesRequest, mut query: EntityQueryIm
 
     query.limit(get_limit(&request)).offset(request.offset);
 
+    match request.bound {
+        Some(bound) => {
+            query.bound(get_bound(bound));
+        },
+        None => {}
+    }
 
     return query;
 }
@@ -64,6 +71,17 @@ fn get_limit(request: &GetEntitiesRequest) -> u32 {
         }
     } else {
         return 1000;
+    }
+}
+
+fn get_bound(bound: Bound) -> crate::domain::bound::Bound {
+    crate::domain::bound::Bound {
+        x0: bound.x0,
+        x1: bound.x1,
+        y0: bound.y0,
+        y1: bound.y1,
+        z0: bound.z0,
+        z1: bound.z1
     }
 }
 
