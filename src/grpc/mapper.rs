@@ -49,27 +49,22 @@ pub fn map_entities_to_api_response(entities: Vec<&Entity>) -> EntityPage {
 
 pub fn apply_query_critera(request: GetEntitiesRequest, mut query: EntityQueryImpl) -> EntityQueryImpl {
 
-    if request.limit > 0 {
-        if request.limit > 10000 {
-            query.limit(10000);
-        } else {
-            query.limit(request.limit);
-        }
-    } else {
-        query.limit(1000);
-    }
+    query.limit(get_limit(&request)).offset(request.offset);
+
 
     return query;
 }
 
-fn get_limit(request: GetEntitiesRequest) -> u32 {
-
-    return 1;
-}
-
-fn get_offset(request: GetEntitiesRequest) -> u32 {
-
-    return 0;
+fn get_limit(request: &GetEntitiesRequest) -> u32 {
+    if request.limit > 0 {
+        if request.limit > 10000 {
+            return 10000;
+        } else {
+            return request.limit;
+        }
+    } else {
+        return 1000;
+    }
 }
 
 pub fn map_add_validation_errors_to_api_response(result: Result<(), Vec<AddEntitiesValidationErrors>>) -> AddEntitiesResponse {
