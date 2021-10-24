@@ -1,6 +1,6 @@
 use crate::poser::{EntityPage, GetEntitiesRequest, AddEntitiesRequest, AddEntitiesResponse};
 use crate::domain::entity::Entity;
-
+use crate::service::AddEntitiesValidationErrors;
 
 pub fn map_add_entities_request_to_domain(req: AddEntitiesRequest) -> Vec<Entity> {
     let mut ret : Vec<Entity> = Vec::new();
@@ -37,4 +37,30 @@ pub fn map_entities_to_api_response(entities: Vec<&Entity>) -> EntityPage {
     }
 
     return entityPage;
+}
+
+pub fn map_add_validation_errors_to_api_response(result: Result<(), Vec<AddEntitiesValidationErrors>>) -> AddEntitiesResponse {
+    
+    
+    let mut response = AddEntitiesResponse {
+        errors: Vec::new()
+    };
+
+    match result {
+        Err(errs) => {
+            for error in errs {
+                response.errors.push(map_add_validation_error(error));
+            }
+        },
+        _ => {}
+    }
+    
+    return response;
+}
+
+fn map_add_validation_error(error: AddEntitiesValidationErrors) -> i32 {
+    match error {
+        AddEntitiesValidationErrors::EntityAddedTwice => 0,
+        AddEntitiesValidationErrors::EntityAlreadyExists => 1,
+    }
 }

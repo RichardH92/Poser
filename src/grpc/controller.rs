@@ -26,18 +26,11 @@ impl Poser for PoserImpl {
     ) -> Result<Response<AddEntitiesResponse>, Status> {
 
         let addEntitiesReq = request.into_inner();
-
         let entities = mapper::map_add_entities_request_to_domain(addEntitiesReq);
-
         let mut service = self.service_lock.write().unwrap();
-
         let result = service.add_entities(entities);
-
-        let reply = AddEntitiesResponse {
-            name: "Hello!".to_string()
-        };
-
-        Ok(Response::new(reply))
+        
+        Ok(Response::new(mapper::map_add_validation_errors_to_api_response(result)))
     }
 
     async fn get_entities(

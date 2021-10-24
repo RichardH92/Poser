@@ -23,7 +23,11 @@ message AddEntitiesRequest {
 }
 
 message AddEntitiesResponse {
-    string name = 8;
+    enum AddEntitiesValidationError {
+        EntityAddedTwice = 0;
+        EntityAlreadExists = 1;
+    }
+    repeated AddEntitiesValidationError errors = 33;
 }
 
 message GetEntitiesRequest {
