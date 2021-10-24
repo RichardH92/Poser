@@ -120,7 +120,7 @@ impl<'a> Service<'a, EntityQueryImpl> for ServiceImpl {
         }
     }
 
-    fn execute_query<'b>(&'b mut self, query: &EntityQueryImpl) -> Vec<&entity::Entity> {
+    fn execute_query<'b>(&'b self, query: &EntityQueryImpl) -> Vec<&entity::Entity> {
         match query.bound {
             Some(bound) => {
                 let b = AABB::from_corners([bound.x0, bound.y0, bound.z0], [bound.x1, bound.y1, bound.z1]);

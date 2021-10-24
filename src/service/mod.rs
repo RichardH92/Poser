@@ -15,7 +15,7 @@ pub trait Service<'a, Q: entity_query::EntityQuery> {
     fn remove_entities(&mut self, entity_ids: Vec<u32>);
     fn get_entity(&self, id: u32) -> Option<&entity::Entity>;
     fn new_query(&self) -> Q; 
-    fn execute_query<'b>(&'b mut self, query: &Q) -> Vec<&entity::Entity>;
+    fn execute_query<'b>(&'b self, query: &Q) -> Vec<&entity::Entity>;
 }
 
 #[cfg(test)]

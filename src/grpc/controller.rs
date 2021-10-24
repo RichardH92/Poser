@@ -47,6 +47,10 @@ impl Poser for PoserImpl {
         
         println!("Got a request: {:?}", request);
 
-        Ok(Response::new(mapper::map_entities_to_api_response(Vec::new())))
+        let service = self.service_lock.read().unwrap();
+        let query = service.new_query();
+        let entities = service.execute_query(&query); 
+
+        Ok(Response::new(mapper::map_entities_to_api_response(entities)))
     }
 }
